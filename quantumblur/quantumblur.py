@@ -230,6 +230,30 @@ def _heights2image(heights):
 
     return image
 
+def _heights2imagemono(heights):
+    """
+    Constructs an image from a set of three height dictionaries, one for each
+    colour channel.
+    """
+    Lx,Ly = _get_size(heights[0])
+    h_max = [max(height.values()) for height in heights]
+
+    image = newimage('RGB',(Lx,Ly))
+    for x in range(Lx):
+        for y in range(Ly):
+            rgb = []
+            for j,height in enumerate(heights):
+                if (x,y) in height:
+                    h = float(height[x,y])/h_max[j]
+                else:
+                    h = 0
+                rgb.append( int(255*h) )
+                rgb.append( int(255*h) )
+                rgb.append( int(255*h) )
+            image.putpixel((x,y), tuple(rgb) )
+
+    return image
+
 
 def make_line ( length ):
     """
@@ -694,6 +718,24 @@ def circuits2image(circuits, log=False):
         heights.append( circuit2height(qc, log=log) )
 
     return _heights2image(heights)
+
+def circuits2imagemono(circuits, log=False):
+    """
+    Extracts an image from list of circuits encoding the RGB channels.
+
+    Args:
+        circuits (list): A list of quantum circuits encoding the image.
+        log (bool): If given, a logarithmic decoding is used.
+
+    Returns:
+        image (Image): An RGB encoded image.
+    """
+
+    heights = []
+    for qc in circuits:
+        heights.append( circuit2height(qc, log=log) )
+
+    return _heights2imagemono(heights)
 
 
 def row_swap_images(image0, image1, fraction, log=False):
