@@ -41,7 +41,7 @@ and information on MicroQiskit can be found at
 
 https://github.com/qiskit-community/MicroQiskit
 """
-
+print("hello from quantumblur!")
 import math
 import random
 
