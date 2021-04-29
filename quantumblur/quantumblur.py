@@ -658,6 +658,33 @@ def swap_images(image0, image1, fraction, log=False):
 
     return new_image0, new_image1
 
+def swap_imagesmono(image0, image1, fraction, log=False):
+    """
+    Given a pair of same sized grid images, a set of partial swaps is applied
+    between corresponding qubits in each circuit.
+    
+    Args:
+        image0, image1 (Image): RGB encoded images.
+        fraction (float): Fraction of swap gates to apply.
+        log (bool): If given, a logarithmic decoding is used.
+            
+    Returns:
+        new_image0, new_image1 (Image): RGB encoded images.
+    """
+    heights0 = _image2heightsmono(image0)
+    heights1 = _image2heightsmono(image1)
+
+    # new_heights0 = []
+    # new_heights1 = []
+    nh0, nh1 = swap_heights(heights0[j], heights1[j], fraction, log=log)
+    # new_heights0 = nh0
+    # new_heights1 = nh1
+
+    new_image0 = _heights2imagemono(nh0)
+    new_image1 = _heights2imagemono(nh1)
+
+    return new_image0, new_image1
+
 def image2circuits(image, log=False):
     """
     Converts an image to a set of three circuits, with one corresponding to
