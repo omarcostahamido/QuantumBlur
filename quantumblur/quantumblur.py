@@ -671,8 +671,8 @@ def image2circuitsmono(image, log=False):
     heights = _image2heightsmono(image)
 
     circuits = []
-    for height in heights:
-        circuits.append( height2circuit(height, log=log) )
+    # for height in heights:
+    circuits.append( height2circuit(heights, log=log) )
 
     return circuits
 
