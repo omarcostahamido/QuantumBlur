@@ -193,6 +193,20 @@ def _image2heights(image):
 
     return heights
 
+def _image2heightsmono(image):
+    """
+    Converts an rgb image into a list of three height dictionaries, one for
+    each colour channgel.
+    """
+    Lx,Ly = image.size
+    heights = {}
+    for x in range(Lx):
+        for y in range(Ly):
+            rgb = image.getpixel((x,y))
+            heights[x,y] = rgb[0]
+
+    return heights
+
 
 def _heights2image(heights):
     """
@@ -634,6 +648,27 @@ def image2circuits(image, log=False):
     """
 
     heights = _image2heights(image)
+
+    circuits = []
+    for height in heights:
+        circuits.append( height2circuit(height, log=log) )
+
+    return circuits
+
+def image2circuitsmono(image, log=False):
+    """
+    Converts an image to a set of three circuits, with one corresponding to
+    each RGB colour channel.
+
+    Args:
+        image (Image): An RGB encoded image.
+        log (bool): If given, a logarithmic encoding is used.
+
+    Returns:
+        circuits (list): A list of quantum circuits encoding the image.
+    """
+
+    heights = _image2heightsmono(image)
 
     circuits = []
     for height in heights:
