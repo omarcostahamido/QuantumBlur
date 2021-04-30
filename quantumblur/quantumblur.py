@@ -676,7 +676,7 @@ def swap_imagesmono(image0, image1, fraction, log=False):
 
     # new_heights0 = []
     # new_heights1 = []
-    nh0, nh1 = swap_heights(heights0[j], heights1[j], fraction, log=log)
+    nh0, nh1 = swap_heights(heights0, heights1, fraction, log=log)
     # new_heights0 = nh0
     # new_heights1 = nh1
 
