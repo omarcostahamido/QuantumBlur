@@ -125,7 +125,8 @@ if not simple_python:
     import numpy as np
     from scipy.linalg import fractional_matrix_power
     from PIL.Image import new as newimage, Image
-
+else:
+    from PIL.Image import new as newimage, Image
 
 def _kron(vec0,vec1):
     """
