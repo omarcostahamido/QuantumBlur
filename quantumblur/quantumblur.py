@@ -805,6 +805,46 @@ def row_swap_images(image0, image1, fraction, log=False):
 
     return new_images[0], new_images[1]
 
+def row_swap_imagesmono(image0, image1, fraction, log=False):
+    """
+    A variant of `swap_images` in which the swap process is done on each line
+    of the images individually, rather than with the images as a whole. This
+    makes it much faster.
+    
+    Args:
+        image0, image1 (Image): RGB encoded images.
+        fraction (float): Fraction of swap gates to apply.
+        log (bool): If given, a logarithmic decoding is used.
+            
+    Returns:
+        new_image0, new_image1 (Image): RGB encoded images.
+    """
+    images = [image0, image1]
+
+    Lx,Ly = images[0].size
+
+    # create separate images for each row
+    rows = [[],[]]
+    for j in range(2):
+        for y in range(Ly):   
+            rows[j].append(newimage('RGB',(Lx,1)))
+            for x in range(Lx):
+                rows[j][y].putpixel((x,0),images[j].getpixel((x,y)))
+
+
+    # do the swap on the row images
+    for y in range(Ly):
+        rows[0][y], rows[1][y] = swap_imagesmono(rows[0][y], rows[1][y], fraction, log=log)
+
+    # reconstruct the full images
+    new_images = [newimage('RGB',(Lx,Ly)) for _ in range(2)]
+    for j in range(2):
+        for y in range(Ly):
+            for x in range(Lx):
+                new_images[j].putpixel((x,y),rows[j][y].getpixel((x,0)))
+
+    return new_images[0], new_images[1]
+
 
 def blur_height(height, xi, axis='x', circuit=None, log=False):
     """
