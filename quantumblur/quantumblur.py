@@ -599,6 +599,41 @@ def swap_heights(height0, height1, fraction, log=False, ):
         
     return new_heights[0], new_heights[1]
 
+def swap_heightsmono(height0, height1, fraction, log=False, ):
+    """
+    Given a pair of height maps for the same sized grid, a set of partial
+    swaps is applied between corresponding qubits in each circuit.
+    
+    Args:
+        height0, height1 (dict): Dictionaries in which keys are coordinates
+            for points on a grid, and the values are floats in the range 0
+            to 1.
+        fraction (float): Fraction of swap gates to apply.
+        log (bool): If given, a logarithmic decoding is used.
+            
+    Returns:
+        new_height0, new_height1 (dict): As with the height inputs.
+    """
+
+    assert _get_size(height0)==_get_size(height1), \
+    "Objects to be swapped are not the same size"   
+    
+    # set up the circuit to be run
+    circuits = [height2circuit(height0),height2circuit(height0)]
+    combined_qc = combine_circuits(circuits[0], circuits[1])
+    partialswap(combined_qc, fraction)
+    
+    # run it an get the marginals for each original qubit register
+    p = _circuit2probs(combined_qc)           
+    marginals = probs2marginals(combined_qc, p)     
+    
+    # convert the marginals to heights
+    new_heights = []
+    for j,marginal in enumerate(marginals):
+        new_heights.append( probs2height(marginal,size=eval(circuits[j].name),log=log) )
+        
+    return new_heights[0], new_heights[1]
+
 
 def height2image(height):
     """
@@ -676,7 +711,7 @@ def swap_imagesmono(image0, image1, fraction, log=False):
 
     # new_heights0 = []
     # new_heights1 = []
-    nh0, nh1 = swap_heights(heights0, heights1, fraction, log=log)
+    nh0, nh1 = swap_heightsmono(heights0, heights1, fraction, log=log)
     # new_heights0 = nh0
     # new_heights1 = nh1
 
